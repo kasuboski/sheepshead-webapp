@@ -1,3 +1,7 @@
+#played-cards {
+  margin-bottom: 20px;
+}
+
 .card {
   height: 200px;
   width: 150px;
@@ -26,7 +30,7 @@
   transform: rotate(270deg);
 }
 
-.row {
+.cards-container-rotated {
   height: 450px;
 }
 
