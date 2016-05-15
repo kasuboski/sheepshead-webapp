@@ -1,16 +1,17 @@
 $(function() {
   let deck = new Deck();
 
-  let player_card_container = $(".cards-container > ul");
-  for(let i=0; i < 10; i++) {
-    let card = deck.draw();
-    
-    let new_li = $("<li>");
-    let img = $("<img>", {src:card.image, class:"card"});
+  let players = [new Player(true, "Player1"), new Player(false, "Comp 1"), new Player(false, "Comp 2")];
 
-    new_li.append(img);
-    player_card_container.append(new_li);
-  }
+  players.forEach(player => {
+    for(let i=0; i < 10; i++) {
+      player.hand.push(deck.draw());
+    }
+  });
+
+  players[0].hand.forEach(card => {
+    addCardtoUI(card);
+  });
 
     //animate bottom cards on hover
   $(".cards-container > ul > li > .card").hover(function() {
@@ -23,3 +24,14 @@ $(function() {
       }, 200, "linear");
   });
 });
+
+let addCardtoUI = function(card) {
+  let player_card_container = $(".cards-container > ul");
+
+  //create card and append to card container div
+  let new_li = $("<li>");
+  let img = $("<img>", {src:card.image, class:"card"});
+
+  new_li.append(img);
+  player_card_container.append(new_li);
+}

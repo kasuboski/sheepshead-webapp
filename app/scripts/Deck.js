@@ -14,8 +14,8 @@ class Deck {
   }
 
   draw() {
-    let randIndex = Math.round(Math.random()*this.cards.length-1) + 1;
-    return this.cards[randIndex];
+    let randIndex = Math.round(Math.random()*(this.cards.length-1));
+    return this.cards.splice(randIndex, 1)[0];
   }
 
 }
