@@ -29,7 +29,7 @@ $(function() {
   bottom_cards.click(function() {
     //remove card from view
     let card = $(this);
-    console.log(players[0].hand[card.attr('data-index')]);
+    // console.log(players[0].hand[card.attr('data-index')]);
     card.parent().remove();
 
     //add card to played card spot remove old one
