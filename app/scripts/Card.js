@@ -13,13 +13,13 @@ class Card {
 
   static getName(identifier) {
     switch(identifier) {
-      case 10:
-        return "jack";
       case 11:
-        return "queen";
+        return "jack";
       case 12:
-        return "king";
+        return "queen";
       case 13:
+        return "king";
+      case 14:
         return "ace";
       default:
         return identifier;
