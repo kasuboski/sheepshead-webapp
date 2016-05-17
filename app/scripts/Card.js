@@ -13,6 +13,10 @@ class Card {
     return `${Card.getName(this.identifier)} of ${this.suit}`;
   }
 
+  compare(a, b) {
+    return a.rank - b.rank;
+  }
+
   static getName(identifier) {
     switch(identifier) {
       case 11:
