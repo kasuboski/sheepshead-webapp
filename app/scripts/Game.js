@@ -17,7 +17,7 @@ const states = {
 };
 
 const events = {
-  PICK: 'pick',
+  ASK_TO_PICK: 'askToPick',
   UPDATE_HAND: 'updateHand'
 }
 
@@ -25,6 +25,7 @@ class Game {
   constructor(players, deck) {
     this.players = players;
     this.currPlayerIndex = 0;
+    this.playersToPlay = this.players.length;
     this.deck = deck;
     this.blind = [];
     this.trick = [];
@@ -51,16 +52,28 @@ class Game {
   }
 
   _pick() {
+    this.playersToPlay--; //keep track of how many we've asked to pick
     let currPlayer = this.players[this.currPlayerIndex]
+
+    if(this.playersToPlay == 0) {
+      //this is the last player
+      //they must pick
+      this._pickBlind(currPlayer);
+      this.state = states.PLAYERTURN;
+    }
     //if player with option to pick is human ask if they want to pick
-    if(currPlayer.isPlayer) {
-      PubSub.publish(events.PICK, 'Find out if human wants to pick');
+     else if(currPlayer.isPlayer) {
+      PubSub.publish(events.ASK_TO_PICK, 'Find out if human wants to pick');
     } else {
       //if computer player wants to pick
-      if(_compWantsToPick(currPlayer)) {
+      if(this._compWantsToPick(currPlayer)) {
         //pick
+        this._pickBlind(currPlayer);
+        this.state = states.PLAYERTURN;
       } else {
-        //try the next player unless at last player
+        //try the next player
+        this._nextPlayer();
+        this._pick();
       }
     }
   }
@@ -69,17 +82,16 @@ class Game {
     player.addCards(this.blind);
     this.blind = [];
 
-    //sort hand again
-    player.sortHand();
-
     if(player.isPlayer) {
-      PubSub.publish(events.UPDATE_HAND, "Update player hand after picking blind");
+      //sort hand again
+      player.sortHand();
+      PubSub.publish(events.UPDATE_HAND, {reason: "Update player hand after picking blind", cards: player.hand});
     } else {
       player.compBury();
     }
   }
 
-  _doesCompWantToPick(player) {
+  _compWantsToPick(player) {
     //won't pick unless has more than 6 'good' cards
     let goodCardCount = 0;
     player.hand.forEach(card => {
@@ -89,5 +101,9 @@ class Game {
     });
     
     return goodCardCount > 6;
+  }
+
+  _nextPlayer() {
+    this.currPlayerIndex = (this.currPlayerIndex + 1) % this.players.length;
   }
 }

@@ -1,7 +1,12 @@
 $(function() {
   //subscribe to events from Game
-  let picking_token = PubSub.subscribe(events.PICK, function(msg, data) {
+  let picking_token = PubSub.subscribe(events.ASK_TO_PICK, function(msg, data) {
     console.log(data);
+  });
+
+  let update_hand_token = PubSub.subscribe(events.UPDATE_HAND, function(msg, data) {
+    console.log(data.reason);
+    updatePlayerHandUI(data.cards);
   });
 
   let deck = new Deck(loadCards);
@@ -12,7 +17,16 @@ $(function() {
 
   game.startGame();
 
-  game.players[0].hand.forEach(function(card, index, array) {
+  updatePlayerHandUI(game.players[0].hand);
+
+});
+
+let updatePlayerHandUI = function(cards) {
+  let player_card_container = $('.cards-container > ul');
+  //remove all cards before redrawing them
+  player_card_container.children().remove();
+
+  cards.forEach(function(card, index, array) {
     addCardtoUI(card, index);
   });
 
@@ -32,7 +46,7 @@ $(function() {
   bottom_cards.click(function() {
     //remove card from view
     let card = $(this);
-    console.log(players[0].hand[card.attr('data-index')]);
+    // console.log(players[0].hand[card.attr('data-index')]);
 
     card.parent().remove();
 
@@ -42,8 +56,7 @@ $(function() {
     card.removeAttr('style');
     $('#player-played-card').append(card);
   });
-
-});
+}
 
 let addCardtoUI = function(card, index) {
   let player_card_container = $('.cards-container > ul');
