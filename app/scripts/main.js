@@ -3,13 +3,11 @@ $(function() {
 
   let players = [new Player(true, "Player1"), new Player(false, "Comp 1"), new Player(false, "Comp 2")];
 
-  players.forEach(player => {
-    for(let i=0; i < 10; i++) {
-      player.hand.push(deck.draw());
-    }
-  });
+  let game = new Game(players, deck);
 
-  players[0].hand.forEach(function(card, index, array) {
+  game.startGame();
+
+  game.players[0].hand.forEach(function(card, index, array) {
     addCardtoUI(card, index);
   });
 
