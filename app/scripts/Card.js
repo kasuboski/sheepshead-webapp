@@ -1,3 +1,4 @@
+let suits = ['clubs', 'spades', 'hearts', 'diamonds'];
 class Card {
   constructor(identifier, suit, rank, points, image) {
     this.identifier = identifier;
@@ -5,6 +6,7 @@ class Card {
     this.rank = rank;
     this.points = points;
     this.image = image;
+    this.owner = null;
   }
 
   toString() {
@@ -14,13 +16,13 @@ class Card {
   static getName(identifier) {
     switch(identifier) {
       case 11:
-        return "jack";
+        return 'jack';
       case 12:
-        return "queen";
+        return 'queen';
       case 13:
-        return "king";
+        return 'king';
       case 14:
-        return "ace";
+        return 'ace';
       default:
         return identifier;
     }

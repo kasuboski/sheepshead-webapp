@@ -1,4 +1,3 @@
-let suits = ["clubs", "spades", "hearts", "diamonds"];
 class Deck {
   constructor(createCards) {
     this.cards = [];
@@ -20,7 +19,7 @@ class Deck {
 let createCardsDefault = function (cards) {
   for(let suit=0; suit < 4; suit++) {
     for(let i=2; i <= 14; i++) {
-      cards.push(new Card(i, suits[suit], i, i, `images/playingcards/PNG-cards-1.3/${Card.getName(i)}_of_${suits[suit]}.png`));
+      cards.push(new SheepsheadCard(i, suits[suit], i, i, `images/playingcards/PNG-cards-1.3/${Card.getName(i)}_of_${suits[suit]}.png`));
     }
   }
 }
