@@ -12,6 +12,10 @@
   position: relative;
 }
 
+ul {
+  list-style-type: none;
+  padding: 0;
+}
 .cards-container li {
   float: left;
   margin-right: -125px;
