@@ -1,3 +1,7 @@
+import {Player} from './Player.js';
+import {Deck} from './Deck.js';
+import {SheepsheadCard} from './SheepsheadCard.js';
+
 /*
   States of the game
   - Dealing
@@ -8,7 +12,7 @@
 
   Dealing => Picking => (Each player plays turn => Trick Over) #cards times => Game Over
 */
-const states = {
+export const states = {
   DEALING: 1,
   PICKING: 2,
   PLAYERTURN: 3, 
@@ -16,12 +20,13 @@ const states = {
   GAMEOVER: 5
 };
 
-const events = {
+export const events = {
   ASK_TO_PICK: 'askToPick',
+  PICKED: 'userPicked',
   UPDATE_HAND: 'updateHand'
 }
 
-class Game {
+export class Game {
   constructor(players, deck) {
     this.players = players;
     this.currPlayerIndex = 0;
@@ -30,6 +35,14 @@ class Game {
     this.blind = [];
     this.trick = [];
     this.state = states.DEALING;
+
+    this._subscribeToEvents();
+  }
+
+  _subscribeToEvents() {
+    this.pickedToken = PubSub.subscribe(events.PICKED, (msg, data) => {
+      this._handlePlayerPickingResponse(data);
+    });
   }
 
   _deal() {
@@ -78,6 +91,20 @@ class Game {
     }
   }
 
+  _handlePlayerPickingResponse(response) {
+    if(response == 'yes') {
+        this._pickBlind(this.players[this.currPlayerIndex]);
+        //find out which cards they want to bury
+        
+    } else if(response == 'no') {
+      //ask the next player
+      this._nextPlayer();
+      this._pick();
+    } else {
+      throw "Player response wasn't valid";
+    }
+  }
+
   _pickBlind(player) {
     player.addCards(this.blind);
     this.blind = [];
@@ -95,7 +122,7 @@ class Game {
     //won't pick unless has more than 6 'good' cards
     let goodCardCount = 0;
     player.hand.forEach(card => {
-      if(card.isTrump() || Card.getName(card.identifier) == 'ace') {
+      if(card.isTrump() || SheepsheadCard.getName(card.identifier) == 'ace') {
         goodCardCount++;
       }
     });

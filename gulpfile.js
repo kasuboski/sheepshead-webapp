@@ -8,6 +8,10 @@ const wiredep = require('wiredep').stream;
 const $ = gulpLoadPlugins();
 const reload = browserSync.reload;
 
+const source = require('vinyl-source-stream')
+const browserify = require('browserify');
+const babelify = require('babelify');
+
 gulp.task('styles', () => {
   return gulp.src('app/styles/*.css')
     .pipe($.sourcemaps.init())
@@ -18,11 +22,14 @@ gulp.task('styles', () => {
 });
 
 gulp.task('scripts', () => {
-  return gulp.src('app/scripts/**/*.js')
-    .pipe($.plumber())
-    .pipe($.sourcemaps.init())
-    .pipe($.babel())
-    .pipe($.sourcemaps.write('.'))
+  //return gulp.src('app/scripts/**/*.js')
+  return browserify('app/scripts/main.js')
+    .transform(babelify)
+    .bundle()
+    .on('error', function(e) {
+      console.log(e);
+    })
+    .pipe(source('bundle.js'))
     .pipe(gulp.dest('.tmp/scripts'))
     .pipe(reload({stream: true}));
 });

@@ -1,21 +1,22 @@
-class SheepsheadPlayer extends Player {
+import {Player} from './Player.js';
+export class SheepsheadPlayer extends Player {
   constructor(isPlayer, name) {
     super(isPlayer, name);
   }
 
   compBury() {
-    if(!this.isPlayer) {
+    if(this.isPlayer) {
       throw "Can only call compBury on computer player";
     }
 
     this.sortHand();
     //use two lowest cards
-    bury(this.hand[0]);
-    bury(this.hand[0]);
+    this.bury(this.hand[0]);
+    this.bury(this.hand[0]);
   }
 
   bury(card) {
     this.points += card.points;
-    this.hand.remove(card);
+    this.hand.splice(this.hand.indexOf(card), 1);
   }
 }

@@ -29,6 +29,18 @@
     <![endif]-->
     
     <div class="container">
+      <div id="ask_to_pick_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="Ask to pick modal" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-sm">
+          <div class="modal-content">
+            <div class="modal-header"><h2>Do you want to pick?</h2></div>
+            <div class="modal-body">
+              <button id="pick-yes" type="button" class="btn">Yes</button>
+              <button id="pick-no" type="button" class="btn">No</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="row">
 
         <!-- upper left -->
@@ -125,13 +137,13 @@
     <!-- endbuild -->
     
     <!-- build:js scripts/main.js -->
-    <script src="scripts/main.js"></script>
-    <script src="scripts/Card.js"></script>
+    <script src="scripts/bundle.js"></script>
+<!--     <script src="scripts/Card.js"></script>
     <script src="scripts/SheepsheadCard.js"></script>
     <script src="scripts/Deck.js"></script>
     <script src="scripts/Player.js"></script>
     <script src="scripts/SheepsheadPlayer.js"></script>
-    <script src="scripts/Game.js"></script>
+    <script src="scripts/Game.js"></script> -->
     <!-- endbuild -->
   </body>
 </html>

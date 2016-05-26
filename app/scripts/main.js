@@ -1,7 +1,16 @@
+import {Game, events, states} from './Game.js';
+import {Deck} from './Deck.js';
+import {SheepsheadCard} from './SheepsheadCard.js';
+import {SheepsheadPlayer} from './SheepsheadPlayer.js';
+import {suits} from './Card.js';
+
 $(function() {
+  addListenersModalButtons();
+
   //subscribe to events from Game
   let picking_token = PubSub.subscribe(events.ASK_TO_PICK, function(msg, data) {
-    console.log(data);
+    //show the modal
+    $("#ask_to_pick_modal").modal('show');
   });
 
   let update_hand_token = PubSub.subscribe(events.UPDATE_HAND, function(msg, data) {
@@ -18,8 +27,23 @@ $(function() {
   game.startGame();
 
   updatePlayerHandUI(game.players[0].hand);
-
 });
+
+let addListenersModalButtons = function() {
+  $("#pick-yes").click(function() {
+    //hide the modal
+    $("#ask_to_pick_modal").modal('hide');
+
+    PubSub.publish(events.PICKED, "yes");
+  });
+
+  $("#pick-no").click(function() {
+    //hide the modal
+    $("#ask_to_pick_modal").modal('hide');
+
+    PubSub.publish(events.PICKED, "no");
+  });
+}
 
 let updatePlayerHandUI = function(cards) {
   let player_card_container = $('.cards-container > ul');
@@ -75,7 +99,7 @@ let loadCards = function(cards) {
     let rank = 0;
     for(let i=7; i <= 9; i++) {
         rank = (suit == 3) ? i : i-6; //if suit is diamonds the rank is higher
-        cards.push(new SheepsheadCard(i, suits[suit], rank, 0, `images/playingcards/PNG-cards-1.3/${Card.getName(i)}_of_${suits[suit]}.png`));
+        cards.push(new SheepsheadCard(i, suits[suit], rank, 0, `images/playingcards/PNG-cards-1.3/${SheepsheadCard.getName(i)}_of_${suits[suit]}.png`));
     }
 
     //king

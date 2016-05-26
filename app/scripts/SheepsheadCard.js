@@ -1,4 +1,5 @@
-class SheepsheadCard extends Card {
+import {Card, suits} from './Card.js';
+export class SheepsheadCard extends Card {
   constructor(identifier, suit, rank, points, image) {
     super(identifier, suit, rank, points, image);
   }
