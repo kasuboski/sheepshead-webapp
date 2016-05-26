@@ -1,4 +1,5 @@
 import {SheepsheadCard} from './SheepsheadCard.js';
+import {suits} from './Card.js';
 export class Deck {
   constructor(createCards) {
     this.cards = [];

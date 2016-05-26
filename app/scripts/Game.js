@@ -13,15 +13,17 @@ import {SheepsheadCard} from './SheepsheadCard.js';
   Dealing => Picking => (Each player plays turn => Trick Over) #cards times => Game Over
 */
 export const states = {
-  DEALING: 1,
-  PICKING: 2,
-  PLAYERTURN: 3, 
-  TRICKOVER: 4,
-  GAMEOVER: 5
+  DEALING: 'dealing',
+  PICKING: 'picking',
+  PLAYERTURN: 'playerTurn', 
+  TRICKOVER: 'trickOver',
+  GAMEOVER: 'gameOver'
 };
 
 export const events = {
   ASK_TO_PICK: 'askToPick',
+  ASK_TO_BURY: 'askToBury',
+  USER_BURY: 'userBury',
   PICKED: 'userPicked',
   UPDATE_HAND: 'updateHand'
 }
@@ -42,6 +44,13 @@ export class Game {
   _subscribeToEvents() {
     this.pickedToken = PubSub.subscribe(events.PICKED, (msg, data) => {
       this._handlePlayerPickingResponse(data);
+    });
+
+    this.buriedToken = PubSub.subscribe(events.USER_BURY, (msg, data) => {
+      console.log("User burying");
+      data.player.buryAll(data.cards);
+
+      this.state = PLAYERTURN;
     });
   }
 
@@ -95,7 +104,7 @@ export class Game {
     if(response == 'yes') {
         this._pickBlind(this.players[this.currPlayerIndex]);
         //find out which cards they want to bury
-        
+        PubSub.publish(events.ASK_TO_BURY, 'Find out which cards the user wants to bury');
     } else if(response == 'no') {
       //ask the next player
       this._nextPlayer();

@@ -19,4 +19,10 @@ export class SheepsheadPlayer extends Player {
     this.points += card.points;
     this.hand.splice(this.hand.indexOf(card), 1);
   }
+
+  buryAll(cards) {
+    cards.forEach(card => {
+      this.bury(card);
+    });
+  }
 }
