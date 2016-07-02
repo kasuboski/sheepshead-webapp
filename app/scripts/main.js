@@ -9,6 +9,8 @@ let state = states.DEALING;
 
 let selectedCards = [];
 
+let user_message = $("#user-message");
+
 $(function() {
   addListenersModalButtons();
 
@@ -24,7 +26,7 @@ $(function() {
 
   let bury_token = EventHelper.subscribe(EventHelper.events.ASK_TO_BURY, function(msg, data) {
     console.log(data);
-    $("#user-message").text("Choose two cards to bury");
+    user_message.text("Choose two cards to bury");
   });
 
   let update_hand_token = EventHelper.subscribe(EventHelper.events.UPDATE_HAND, function(msg, data) {
@@ -116,6 +118,7 @@ let updatePlayerHandUI = function(cards) {
             cardsToBury.push(players[0].hand[card.attr('data-index')]);
           });
 
+          user_message.text("");
           EventHelper.publish(EventHelper.events.USER_BURY, {player: players[0], cards: cardsToBury});
         }
       }

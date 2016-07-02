@@ -62,6 +62,8 @@ export class Game {
 
   startGame() {
     this._deal();
+    //TODO: Fix this so human player isn't assumed to be the first in the array
+    EventHelper.publish(EventHelper.events.UPDATE_HAND, {reason: "Update player hand after dealing", cards: this.players[0].hand});
     this.stateManager.nextState();
     this._pick();
   }
@@ -81,7 +83,7 @@ export class Game {
       EventHelper.publish(EventHelper.events.ASK_TO_PICK, 'Find out if human wants to pick');
     } else {
       //if computer player wants to pick
-      if(Game._compWantsToPick(currPlayer)) {
+      if(GameUtil.compWantsToPick(currPlayer)) {
         //pick
         this._pickBlind(currPlayer);
         this.stateManager.nextState();
@@ -108,6 +110,7 @@ export class Game {
   }
 
   _pickBlind(player) {
+    console.log(`${player.name} picked`);
     player.addCards(this.blind);
     this.blind = [];
 
@@ -118,22 +121,6 @@ export class Game {
     } else {
       player.compBury();
     }
-  }
-
-  static _compWantsToPick(player) {
-    //won't pick unless has more than 6 'good' cards
-    let goodCardCount = 0;
-    player.hand.forEach(card => {
-      if(Game._isGoodCard(card)) {
-        goodCardCount++;
-      }
-    });
-    
-    return goodCardCount > 6;
-  }
-
-  static _isGoodCard(card) {
-    return card.isTrump() || SheepsheadCard.getName(card.identifier) == 'ace';
   }
 
   _nextPlayer() {

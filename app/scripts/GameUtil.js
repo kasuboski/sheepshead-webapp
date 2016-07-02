@@ -22,6 +22,19 @@ export const GameUtil = {
       //queens
       cards.push(new SheepsheadCard(12, suits[suit], 20-suit, 3, `images/playingcards/PNG-cards-1.3/queen_of_${suits[suit]}.png`));
     }
-
+  },
+  isGoodCard: function(card) {
+    return card.isTrump() || SheepsheadCard.getName(card.identifier) == 'ace';
+  },
+  compWantsToPick: function(player) {
+    //won't pick unless has more than 6 'good' cards
+    let goodCardCount = 0;
+    player.hand.forEach(card => {
+      if(GameUtil.isGoodCard(card)) {
+        goodCardCount++;
+      }
+    });
+    
+    return goodCardCount > 6;
   }
 }
