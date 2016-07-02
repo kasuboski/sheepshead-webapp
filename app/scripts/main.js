@@ -135,7 +135,7 @@ let updatePlayerHandUI = function(cards) {
           //remove them from the view and find it in the player's hand
           let cardsToBury = [];
           selectedCards.forEach( card => {
-            card.parent().remove;
+            card.parent().remove();
 
             cardsToBury.push(players[0].hand[card.attr('data-index')]);
           });
