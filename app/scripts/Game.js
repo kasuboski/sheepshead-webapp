@@ -124,12 +124,16 @@ export class Game {
     //won't pick unless has more than 6 'good' cards
     let goodCardCount = 0;
     player.hand.forEach(card => {
-      if(card.isTrump() || SheepsheadCard.getName(card.identifier) == 'ace') {
+      if(Game._isGoodCard(card)) {
         goodCardCount++;
       }
     });
     
     return goodCardCount > 6;
+  }
+
+  static _isGoodCard(card) {
+    return card.isTrump() || SheepsheadCard.getName(card.identifier) == 'ace';
   }
 
   _nextPlayer() {
