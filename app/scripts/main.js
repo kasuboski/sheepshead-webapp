@@ -1,4 +1,5 @@
-import {Game, events, states} from './Game.js';
+import {Game, events} from './Game.js';
+import {states} from './StateManager.js';
 import {Deck} from './Deck.js';
 import {SheepsheadCard} from './SheepsheadCard.js';
 import {SheepsheadPlayer} from './SheepsheadPlayer.js';
@@ -104,7 +105,7 @@ let updatePlayerHandUI = function(cards) {
     let player_card = players[0].hand[card.attr('data-index')];
     // console.log(players[0].hand[card.attr('data-index')]);
 
-    if(game.state == states.PLAYERTURN) {
+    if(game.getState() == states.PLAYERTURN) {
       card.parent().remove();
 
       //add card to played card spot remove old one
@@ -112,7 +113,7 @@ let updatePlayerHandUI = function(cards) {
       //reset style
       card.removeAttr('style');
       $('#player-played-card').append(card);
-    } else if(game.state == states.PICKING) {
+    } else if(game.getState() == states.PICKING) {
       //if card was previously selected deselect it
       if(card.hasClass("selected-card")) {
         card.removeClass("selected-card");

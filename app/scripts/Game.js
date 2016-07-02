@@ -1,24 +1,7 @@
 import {Player} from './Player.js';
 import {Deck} from './Deck.js';
 import {SheepsheadCard} from './SheepsheadCard.js';
-
-/*
-  States of the game
-  - Dealing
-  - Picking
-  - Each Player plays turn
-  - Trick Over
-  - Game Over
-
-  Dealing => Picking => (Each player plays turn => Trick Over) #cards times => Game Over
-*/
-export const states = {
-  DEALING: 'dealing',
-  PICKING: 'picking',
-  PLAYERTURN: 'playerTurn', 
-  TRICKOVER: 'trickOver',
-  GAMEOVER: 'gameOver'
-};
+import {states, StateManager} from './StateManager.js';
 
 export const events = {
   ASK_TO_PICK: 'askToPick',
@@ -26,6 +9,12 @@ export const events = {
   USER_BURY: 'userBury',
   PICKED: 'userPicked',
   UPDATE_HAND: 'updateHand'
+}
+
+export const GameConstants = {
+  NUM_PLAYERS: 3,
+  NUM_CARDS: 10,
+  NUM_BLIND: 2
 }
 
 export class Game {
@@ -36,7 +25,7 @@ export class Game {
     this.deck = deck;
     this.blind = [];
     this.trick = [];
-    this.state = states.DEALING;
+    this.stateManager = new StateManager();
 
     this._subscribeToEvents();
   }
@@ -50,26 +39,30 @@ export class Game {
       console.log("User burying");
       data.player.buryAll(data.cards);
 
-      this.state = states.PLAYERTURN;
+      this.stateManager.nextState();
     });
   }
 
   _deal() {
     this.players.forEach(player => {
-      for(let i=0; i < 10; i++) {
+      for(let i=0; i < GameConstants.NUM_CARDS; i++) {
         player.addCard(this.deck.draw());
       }
       player.sortHand();
     });
 
-    for(let i=0; i < 2; i++) {
+    for(let i=0; i < GameConstants.NUM_BLIND; i++) {
       this.blind.push(this.deck.draw());
     }
   }
 
+  getState() {
+    return this.stateManager.state;
+  }
+
   startGame() {
     this._deal();
-    this.state = states.PICKING;
+    this.stateManager.nextState();
     this._pick();
   }
 
@@ -81,7 +74,7 @@ export class Game {
       //this is the last player
       //they must pick
       this._pickBlind(currPlayer);
-      this.state = states.PLAYERTURN;
+      this.stateManager.nextState();
     }
     //if player with option to pick is human ask if they want to pick
      else if(currPlayer.isPlayer) {
@@ -91,7 +84,7 @@ export class Game {
       if(this._compWantsToPick(currPlayer)) {
         //pick
         this._pickBlind(currPlayer);
-        this.state = states.PLAYERTURN;
+        this.stateManager.nextState();
       } else {
         //try the next player
         this._nextPlayer();
