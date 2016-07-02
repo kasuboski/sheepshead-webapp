@@ -1,4 +1,4 @@
-export let suits = ['clubs', 'spades', 'hearts', 'diamonds'];
+export const suits = ['clubs', 'spades', 'hearts', 'diamonds'];
 export class Card {
   constructor(identifier, suit, rank, points, image) {
     this.identifier = identifier;

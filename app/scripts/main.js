@@ -1,35 +1,11 @@
-import {Game, events} from './Game.js';
+import {Game} from './Game.js';
+import {EventHelper} from './EventHelper.js';
 import {states} from './StateManager.js';
 import {Deck} from './Deck.js';
-import {SheepsheadCard} from './SheepsheadCard.js';
 import {SheepsheadPlayer} from './SheepsheadPlayer.js';
-import {suits} from './Card.js';
+import {GameUtil} from './GameUtil.js';
 
-//load cards for sheepshead
-let loadCards = function(cards) {
-  for(let suit=0; suit < 4; suit++) {
-    let rank = 0;
-    for(let i=7; i <= 9; i++) {
-        rank = (suit == 3) ? i : i-6; //if suit is diamonds the rank is higher
-        cards.push(new SheepsheadCard(i, suits[suit], rank, 0, `images/playingcards/PNG-cards-1.3/${SheepsheadCard.getName(i)}_of_${suits[suit]}.png`));
-    }
-
-    //king
-    cards.push(new SheepsheadCard(12, suits[suit], rank+1, 4, `images/playingcards/PNG-cards-1.3/king_of_${suits[suit]}.png`));
-    //10
-    cards.push(new SheepsheadCard(10, suits[suit], rank+2, 10, `images/playingcards/PNG-cards-1.3/10_of_${suits[suit]}.png`));
-    //ace
-    cards.push(new SheepsheadCard(14, suits[suit], rank+3, 11, `images/playingcards/PNG-cards-1.3/ace_of_${suits[suit]}.png`));
-
-    //jacks
-    cards.push(new SheepsheadCard(11, suits[suit], 16-suit, 2, `images/playingcards/PNG-cards-1.3/jack_of_${suits[suit]}.png`));    
-    //queens
-    cards.push(new SheepsheadCard(12, suits[suit], 20-suit, 3, `images/playingcards/PNG-cards-1.3/queen_of_${suits[suit]}.png`));
-  }
-
-}
-
-let deck = new Deck(loadCards);
+let deck = new Deck(GameUtil.loadCards);
 
 let players = [new SheepsheadPlayer(true, 'Player1'), new SheepsheadPlayer(false, 'Comp 1'), new SheepsheadPlayer(false, 'Comp 2')];
 
@@ -41,17 +17,17 @@ $(function() {
   addListenersModalButtons();
 
   //subscribe to events from Game
-  let picking_token = PubSub.subscribe(events.ASK_TO_PICK, function(msg, data) {
+  let picking_token = EventHelper.subscribe(EventHelper.events.ASK_TO_PICK, function(msg, data) {
     //show the modal
     $("#ask_to_pick_modal").modal('show');
   });
 
-  let bury_token = PubSub.subscribe(events.ASK_TO_BURY, function(msg, data) {
+  let bury_token = EventHelper.subscribe(EventHelper.events.ASK_TO_BURY, function(msg, data) {
     console.log(data);
     $("#user-message").text("Choose two cards to bury");
   });
 
-  let update_hand_token = PubSub.subscribe(events.UPDATE_HAND, function(msg, data) {
+  let update_hand_token = EventHelper.subscribe(EventHelper.events.UPDATE_HAND, function(msg, data) {
     console.log(data.reason);
     updatePlayerHandUI(data.cards);
   });
@@ -66,14 +42,14 @@ let addListenersModalButtons = function() {
     //hide the modal
     $("#ask_to_pick_modal").modal('hide');
 
-    PubSub.publish(events.PICKED, "yes");
+    EventHelper.publish(EventHelper.events.PICKED, "yes");
   });
 
   $("#pick-no").click(function() {
     //hide the modal
     $("#ask_to_pick_modal").modal('hide');
 
-    PubSub.publish(events.PICKED, "no");
+    EventHelper.publish(EventHelper.events.PICKED, "no");
   });
 }
 
@@ -141,7 +117,7 @@ let updatePlayerHandUI = function(cards) {
             cardsToBury.push(players[0].hand[card.attr('data-index')]);
           });
 
-          PubSub.publish(events.USER_BURY, {player: players[0], cards: cardsToBury});
+          EventHelper.publish(EventHelper.events.USER_BURY, {player: players[0], cards: cardsToBury});
         }
       }
     }
