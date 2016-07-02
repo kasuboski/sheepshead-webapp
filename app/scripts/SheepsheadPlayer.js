@@ -25,4 +25,8 @@ export class SheepsheadPlayer extends Player {
       this.bury(card);
     });
   }
+
+  playCard(card) {
+    this.hand.splice(this.hand.indexOf(card), 1);
+  }
 }

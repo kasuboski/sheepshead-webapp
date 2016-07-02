@@ -34,6 +34,10 @@ $(function() {
     updatePlayerHandUI(data.cards);
   });
 
+  let play_card_token = EventHelper.subscribe(EventHelper.events.ASK_TO_PLAY, function(msg, data) {
+    user_message.text("Pick a card to play");
+  });
+
   EventHelper.publish(EventHelper.events.START_GAME, {players: players});
 
 });
@@ -83,6 +87,8 @@ let updatePlayerHandUI = function(cards) {
     // console.log(players[0].hand[card.attr('data-index')]);
 
     if(state == states.PLAYERTURN) {
+      //TODO: make sure card is correct
+
       card.parent().remove();
 
       //add card to played card spot remove old one
@@ -90,6 +96,12 @@ let updatePlayerHandUI = function(cards) {
       //reset style
       card.removeAttr('style');
       $('#player-played-card').append(card);
+
+      //clear user_message
+      user_message.text("");
+
+      //send played card
+      EventHelper.publish(EventHelper.events.PLAYED_CARD, {player: players[0], card: player_card});
     } else if(state == states.PICKING) {
       //if card was previously selected deselect it
       if(card.hasClass("selected-card")) {

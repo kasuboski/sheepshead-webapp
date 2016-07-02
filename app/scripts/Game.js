@@ -20,6 +20,7 @@ export class Game {
   constructor(players) {
     this.players = players;
     this.currPlayerIndex = 0;
+    this.lastWinIndex = 0;
     this.playersToPlay = this.players.length;
     this.deck = new Deck(GameUtil.loadCards);;
     this.blind = [];
@@ -36,10 +37,11 @@ export class Game {
     });
 
     this.buriedToken = EventHelper.subscribe(EventHelper.events.USER_BURY, (msg, data) => {
-      console.log("User burying");
-      data.player.buryAll(data.cards);
+      this._handlePlayerBury(data.player, data.cards);
+    });
 
-      this.stateManager.nextState();
+    this.playedCardToken = EventHelper.subscribe(EventHelper.events.PLAYED_CARD, (msg, data) => {
+      this._handlePlayerPlayed(data.player, data.card);
     });
   }
 
@@ -65,18 +67,21 @@ export class Game {
     //TODO: Fix this so human player isn't assumed to be the first in the array
     EventHelper.publish(EventHelper.events.UPDATE_HAND, {reason: "Update player hand after dealing", cards: this.players[0].hand});
     this.stateManager.nextState();
-    this._pick();
+    this._determinePicker();
   }
 
-  _pick() {
+  _determinePicker() {
     this.playersToPlay--; //keep track of how many we've asked to pick
     let currPlayer = this.players[this.currPlayerIndex]
 
     if(this.playersToPlay == 0) {
+      //TODO: If human player tell them they were forced to pick
       //this is the last player
       //they must pick
       this._pickBlind(currPlayer);
+
       this.stateManager.nextState();
+      this._getReadyToPlayTrick();
     }
     //if player with option to pick is human ask if they want to pick
      else if(currPlayer.isPlayer) {
@@ -86,13 +91,60 @@ export class Game {
       if(GameUtil.compWantsToPick(currPlayer)) {
         //pick
         this._pickBlind(currPlayer);
+
         this.stateManager.nextState();
+        this._getReadyToPlayTrick();
       } else {
         //try the next player
         this._nextPlayer();
-        this._pick();
+        this._determinePicker();
       }
     }
+  }
+
+  _getReadyToPlayTrick() {
+    this.playersToPlay = this.players.length;
+    //person to go first is whoever won last initially the human player
+    this.currPlayerIndex = this.lastWinIndex;
+
+    this._playTurn();
+  }
+
+  _playTurn() {
+    this.playersToPlay--;
+    let currPlayer = this.players[this.currPlayerIndex];
+
+    console.log(`It is ${currPlayer.name}'s turn`);
+
+    if(this.playersToPlay == 0) {
+      //the trick is over
+      if(this.players[0].hand.length > 0) {
+        //there are still cards to play
+        //start next trick
+        this._getReadyToPlayTrick();
+      } else {
+        //the game is over
+        //TODO: handle game over
+      }
+    } else {
+      //some players still need to play
+      if(currPlayer.isPlayer) {
+        //handle human player
+        //find out which card they want to play
+        EventHelper.publish(EventHelper.events.ASK_TO_PLAY, 'Find out which card the user wants to play');
+      } else {
+        //handle computer player
+      }
+    }
+  }
+
+  _handlePlayerPlayed(player, card) {
+    //assume UI validated card already
+    this.trick.push(card);
+    player.playCard(card);
+
+    this._nextPlayer();
+    this._playTurn();
   }
 
   _handlePlayerPickingResponse(response) {
@@ -103,10 +155,18 @@ export class Game {
     } else if(response == 'no') {
       //ask the next player
       this._nextPlayer();
-      this._pick();
+      this._determinePicker();
     } else {
       throw "Player response wasn't valid";
     }
+  }
+
+  _handlePlayerBury(player, cards) {
+      console.log("User burying");
+      player.buryAll(cards);
+
+      this.stateManager.nextState();
+      this._getReadyToPlayTrick();
   }
 
   _pickBlind(player) {

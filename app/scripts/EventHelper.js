@@ -6,7 +6,9 @@ export const EventHelper = {
     ASK_TO_BURY: 'askToBury',
     USER_BURY: 'userBury',
     PICKED: 'userPicked',
-    UPDATE_HAND: 'updateHand'
+    UPDATE_HAND: 'updateHand',
+    ASK_TO_PLAY: 'askToPlay',
+    PLAYED_CARD: 'playedCard', 
   },
   subscribe: function(event, callback) {
     console.log(`Subscribed to event ${event}`);
