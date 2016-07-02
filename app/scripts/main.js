@@ -1,7 +1,6 @@
 import {Game} from './Game.js';
 import {EventHelper} from './EventHelper.js';
 import {states} from './StateManager.js';
-import {Deck} from './Deck.js';
 import {SheepsheadPlayer} from './SheepsheadPlayer.js';
 
 let players = [new SheepsheadPlayer(true, 'Player1'), new SheepsheadPlayer(false, 'Comp 1'), new SheepsheadPlayer(false, 'Comp 2')];
@@ -29,9 +28,11 @@ $(function() {
     updatePlayerHandUI(data.cards);
   });
 
-  game.startGame();
+  EventHelper.publish(EventHelper.events.START_GAME, function(msg, data) {
 
-  updatePlayerHandUI(game.players[0].hand);
+  });
+  // game.startGame();
+
 });
 
 let addListenersModalButtons = function() {
