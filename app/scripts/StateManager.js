@@ -41,7 +41,7 @@ export class StateManager {
         break;
       default: throw "Invalid State";
     }
-    console.log("State is now " + this.state);
+    console.log("State is now ${this.state}");
   }
 
 }
