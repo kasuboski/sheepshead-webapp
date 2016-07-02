@@ -5,12 +5,16 @@ import {SheepsheadPlayer} from './SheepsheadPlayer.js';
 
 let players = [new SheepsheadPlayer(true, 'Player1'), new SheepsheadPlayer(false, 'Comp 1'), new SheepsheadPlayer(false, 'Comp 2')];
 
-let game = new Game(players);
+let state = states.DEALING;
 
 let selectedCards = [];
 
 $(function() {
   addListenersModalButtons();
+
+  let stateUpdate_token = EventHelper.subscribe(EventHelper.events.UPDATE_STATE, function(msg, data) {
+    state = data.state;
+  });
 
   //subscribe to events from Game
   let picking_token = EventHelper.subscribe(EventHelper.events.ASK_TO_PICK, function(msg, data) {
@@ -28,10 +32,7 @@ $(function() {
     updatePlayerHandUI(data.cards);
   });
 
-  EventHelper.publish(EventHelper.events.START_GAME, function(msg, data) {
-
-  });
-  // game.startGame();
+  EventHelper.publish(EventHelper.events.START_GAME, {players: players});
 
 });
 
@@ -79,7 +80,7 @@ let updatePlayerHandUI = function(cards) {
     let player_card = players[0].hand[card.attr('data-index')];
     // console.log(players[0].hand[card.attr('data-index')]);
 
-    if(game.getState() == states.PLAYERTURN) {
+    if(state == states.PLAYERTURN) {
       card.parent().remove();
 
       //add card to played card spot remove old one
@@ -87,7 +88,7 @@ let updatePlayerHandUI = function(cards) {
       //reset style
       card.removeAttr('style');
       $('#player-played-card').append(card);
-    } else if(game.getState() == states.PICKING) {
+    } else if(state == states.PICKING) {
       //if card was previously selected deselect it
       if(card.hasClass("selected-card")) {
         card.removeClass("selected-card");

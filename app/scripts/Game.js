@@ -11,6 +11,11 @@ export const GameConstants = {
   NUM_BLIND: 2
 }
 
+let startToken = EventHelper.subscribe(EventHelper.events.START_GAME, (msg, data) => {
+  let game = new Game(data.players);
+  game.startGame();
+});
+
 export class Game {
   constructor(players) {
     this.players = players;
@@ -25,9 +30,6 @@ export class Game {
   }
 
   _subscribeToEvents() {
-    this.startToken = EventHelper.subscribe(EventHelper.events.START_GAME, (msg, data) => {
-      this.startGame();
-    });
 
     this.pickedToken = EventHelper.subscribe(EventHelper.events.PICKED, (msg, data) => {
       this._handlePlayerPickingResponse(data);

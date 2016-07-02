@@ -1,3 +1,4 @@
+import {EventHelper} from './EventHelper.js';
 /*
   States of the game
   - Dealing
@@ -41,6 +42,7 @@ export class StateManager {
         break;
       default: throw "Invalid State";
     }
+    EventHelper.publish(EventHelper.events.UPDATE_STATE, {state: this.state});
     console.log(`State is now ${this.state}`);
   }
 
