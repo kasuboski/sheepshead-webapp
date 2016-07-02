@@ -3,13 +3,10 @@ import {EventHelper} from './EventHelper.js';
 import {states} from './StateManager.js';
 import {Deck} from './Deck.js';
 import {SheepsheadPlayer} from './SheepsheadPlayer.js';
-import {GameUtil} from './GameUtil.js';
-
-let deck = new Deck(GameUtil.loadCards);
 
 let players = [new SheepsheadPlayer(true, 'Player1'), new SheepsheadPlayer(false, 'Comp 1'), new SheepsheadPlayer(false, 'Comp 2')];
 
-let game = new Game(players, deck);
+let game = new Game(players);
 
 let selectedCards = [];
 

@@ -3,6 +3,7 @@ import {Deck} from './Deck.js';
 import {SheepsheadCard} from './SheepsheadCard.js';
 import {states, StateManager} from './StateManager.js';
 import {EventHelper} from './EventHelper.js';
+import {GameUtil} from './GameUtil.js';
 
 export const GameConstants = {
   NUM_PLAYERS: 3,
@@ -11,11 +12,11 @@ export const GameConstants = {
 }
 
 export class Game {
-  constructor(players, deck) {
+  constructor(players) {
     this.players = players;
     this.currPlayerIndex = 0;
     this.playersToPlay = this.players.length;
-    this.deck = deck;
+    this.deck = new Deck(GameUtil.loadCards);;
     this.blind = [];
     this.trick = [];
     this.stateManager = new StateManager();
