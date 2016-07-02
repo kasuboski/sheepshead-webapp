@@ -50,7 +50,7 @@ export class Game {
       console.log("User burying");
       data.player.buryAll(data.cards);
 
-      this.state = PLAYERTURN;
+      this.state = states.PLAYERTURN;
     });
   }
 
