@@ -1,4 +1,4 @@
-import {Game} from './Game.js';
+import {Game} from './Game.js'; //startGame subscriber isn't called unless this is imported
 import {EventHelper} from './EventHelper.js';
 import {states} from './StateManager.js';
 import {SheepsheadPlayer} from './SheepsheadPlayer.js';
