@@ -38,6 +38,11 @@ $(function() {
     user_message.text("Pick a card to play");
   });
 
+  let comp_player_played_token = EventHelper.subscribe(EventHelper.events.COMP_PLAYER_PLAYED, function(msg, data) {
+    console.log(`Player ${data.player.name} played ${data.card}`);
+    //TODO: update correct comp player ui
+  });
+
   EventHelper.publish(EventHelper.events.START_GAME, {players: players});
 
 });
@@ -81,14 +86,14 @@ let updatePlayerHandUI = function(cards) {
 
   //add click listeners to bottom cards
   bottom_cards.click(function() {
-    //remove card from view
     let card = $(this);
     let player_card = players[0].hand[card.attr('data-index')];
     // console.log(players[0].hand[card.attr('data-index')]);
 
+    //TODO: Don't let player play when it's not their turn
     if(state == states.PLAYERTURN) {
-      //TODO: make sure card is correct
-
+      //TODO: make sure card is legal
+      //remove card from view
       card.parent().remove();
 
       //add card to played card spot remove old one

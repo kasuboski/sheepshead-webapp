@@ -8,7 +8,8 @@ export const EventHelper = {
     PICKED: 'userPicked',
     UPDATE_HAND: 'updateHand',
     ASK_TO_PLAY: 'askToPlay',
-    PLAYED_CARD: 'playedCard', 
+    PLAYED_CARD: 'playedCard',
+    COMP_PLAYER_PLAYED:'compPlayerPlayed' 
   },
   subscribe: function(event, callback) {
     console.log(`Subscribed to event ${event}`);

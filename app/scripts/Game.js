@@ -103,6 +103,7 @@ export class Game {
   }
 
   _getReadyToPlayTrick() {
+
     this.playersToPlay = this.players.length;
     //person to go first is whoever won last initially the human player
     this.currPlayerIndex = this.lastWinIndex;
@@ -134,14 +135,18 @@ export class Game {
         EventHelper.publish(EventHelper.events.ASK_TO_PLAY, 'Find out which card the user wants to play');
       } else {
         //handle computer player
+        let playedCard = GameUtil.compPlayCard(this.trick, currPlayer);
+        EventHelper.publish(EventHelper.events.COMP_PLAYER_PLAYED, {player: currPlayer, card: playedCard});
       }
     }
   }
 
   _handlePlayerPlayed(player, card) {
     //assume UI validated card already
-    this.trick.push(card);
-    player.playCard(card);
+    // this.trick.push(card);
+    // player.playCard(card);
+
+    GameUtil.playCard(this.trick, player, card);
 
     this._nextPlayer();
     this._playTurn();
@@ -173,6 +178,8 @@ export class Game {
     console.log(`${player.name} picked`);
     player.addCards(this.blind);
     this.blind = [];
+
+    player.isPicker = true;
 
     if(player.isPlayer) {
       //sort hand again

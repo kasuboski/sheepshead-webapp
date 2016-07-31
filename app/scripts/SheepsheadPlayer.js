@@ -2,6 +2,7 @@ import {Player} from './Player.js';
 export class SheepsheadPlayer extends Player {
   constructor(isPlayer, name) {
     super(isPlayer, name);
+    this.isPicker = false;
   }
 
   compBury() {
