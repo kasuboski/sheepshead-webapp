@@ -51,7 +51,7 @@ export const GameUtil = {
 
     let playedCard;
     if(player.isPicker) {
-      if(trick.length == 0) {
+      if(trick == null || trick.length == 0) {
         //computer is leading and the picker
         //play high card
         let highCard = AIUtil.getHighCard(player.hand);
@@ -63,7 +63,7 @@ export const GameUtil = {
       }
     } else {
       //not the picker
-      if(trick.length == 0) {
+      if(trick == null || trick.length == 0) {
         //computer is leading
         let failAce = AIUtil.getFailAce(player.hand);
         if(failAce) {

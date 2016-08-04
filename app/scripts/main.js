@@ -92,56 +92,64 @@ let updatePlayerHandUI = function(cards) {
 
     //TODO: Don't let player play when it's not their turn
     if(state == states.PLAYERTURN) {
-      //TODO: make sure card is legal
-      //remove card from view
-      card.parent().remove();
-
-      //add card to played card spot remove old one
-      $('#player-played-card').empty();
-      //reset style
-      card.removeAttr('style');
-      $('#player-played-card').append(card);
-
-      //clear user_message
-      user_message.text("");
-
-      //send played card
-      EventHelper.publish(EventHelper.events.PLAYED_CARD, {player: players[0], card: player_card});
+      playerTurnClickHandler(card, player_card);
     } else if(state == states.PICKING) {
-      //if card was previously selected deselect it
-      if(card.hasClass("selected-card")) {
-        card.removeClass("selected-card");
-
-        selectedCards.splice(selectedCards.indexOf(card, 1));
-      } else {
-        if(selectedCards.length < 1) {
-          //highlight picked card
-          card.addClass("selected-card");
-
-          selectedCards.push(card);
-        } else {
-
-          //highlight picked card
-          card.addClass("selected-card");
-
-          selectedCards.push(card);
-
-          //bury the cards
-          //remove them from the view and find it in the player's hand
-          let cardsToBury = [];
-          selectedCards.forEach( card => {
-            card.parent().remove();
-
-            cardsToBury.push(players[0].hand[card.attr('data-index')]);
-          });
-
-          user_message.text("");
-          EventHelper.publish(EventHelper.events.USER_BURY, {player: players[0], cards: cardsToBury});
-        }
-      }
+      pickingClickHandler(card);
     }
 
   });
+}
+
+let playerTurnClickHandler = function(card, player_card) {
+  //TODO: make sure card is legal
+  //remove card from view
+  card.parent().remove();
+
+  //add card to played card spot remove old one
+  $('#player-played-card').empty();
+  //reset style
+  card.removeAttr('style');
+  $('#player-played-card').append(card);
+
+  //clear user_message
+  user_message.text("");
+
+  //send played card
+  EventHelper.publish(EventHelper.events.PLAYED_CARD, {player: players[0], card: player_card});
+}
+
+let pickingClickHandler = function(card) {
+  //if card was previously selected deselect it
+  if(card.hasClass("selected-card")) {
+    card.removeClass("selected-card");
+
+    selectedCards.splice(selectedCards.indexOf(card, 1));
+  } else {
+    if(selectedCards.length < 1) {
+      //highlight picked card
+      card.addClass("selected-card");
+
+      selectedCards.push(card);
+    } else {
+
+      //highlight picked card
+      card.addClass("selected-card");
+
+      selectedCards.push(card);
+
+      //bury the cards
+      //remove them from the view and find it in the player's hand
+      let cardsToBury = [];
+      selectedCards.forEach( card => {
+        card.parent().remove();
+
+        cardsToBury.push(players[0].hand[card.attr('data-index')]);
+      });
+
+      user_message.text("");
+      EventHelper.publish(EventHelper.events.USER_BURY, {player: players[0], cards: cardsToBury});
+    }
+  }
 }
 
 let addCardtoUI = function(card, index) {

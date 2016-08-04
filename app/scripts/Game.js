@@ -41,6 +41,7 @@ export class Game {
     });
 
     this.playedCardToken = EventHelper.subscribe(EventHelper.events.PLAYED_CARD, (msg, data) => {
+      console.log("player played: " + data.card);
       this._handlePlayerPlayed(data.player, data.card);
     });
   }
@@ -169,6 +170,8 @@ export class Game {
   _handlePlayerBury(player, cards) {
       console.log("User burying");
       player.buryAll(cards);
+
+      EventHelper.publish(EventHelper.events.UPDATE_HAND, {reason: "Update player hand after picking burying", cards: player.hand});
 
       this.stateManager.nextState();
       this._getReadyToPlayTrick();

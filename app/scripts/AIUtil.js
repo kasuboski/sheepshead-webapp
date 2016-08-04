@@ -58,7 +58,6 @@ export const AIUtil = {
     return false;
   },
   arePartnersWinning: function(trick) {
-    console.log("arePartnersWinning trick: " + trick);
     let winningCard = AIUtil.getWinningCard(trick);
     //partners winning if the winning card is owned by a partner
     return !winningCard.owner.isPicker;
