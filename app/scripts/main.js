@@ -113,7 +113,7 @@ let updateCompPlayerHandUI = function(player, card) {
   //add new one
   cardContainer.append(img);
 
-  //TODO: remove card from the comp player cards shown on sides
+  //remove card from the comp player cards shown on sides
   handElements.last().remove();
 }
 
