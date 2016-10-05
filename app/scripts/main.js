@@ -40,7 +40,8 @@ $(function() {
 
   let comp_player_played_token = EventHelper.subscribe(EventHelper.events.COMP_PLAYER_PLAYED, function(msg, data) {
     console.log(`Player ${data.player.name} played ${data.card}`);
-    //TODO: update correct comp player ui
+    updateCompPlayerHandUI(data.player, data.card);
+    EventHelper.publish(EventHelper.events.COMP_PLAYER_UPDATED);
   });
 
   EventHelper.publish(EventHelper.events.START_GAME, {players: players});
@@ -61,6 +62,37 @@ let addListenersModalButtons = function() {
 
     EventHelper.publish(EventHelper.events.PICKED, "no");
   });
+}
+
+let updateCompPlayerHandUI = function(player, card) {
+  // determine which comp
+  const playerIndex = players.indexOf(player);
+
+  // update comp played card
+  let cardContainer;
+  let rotatedClass;
+  switch(playerIndex) {
+    case 1:
+      cardContainer = $("#left-played-card");
+      rotatedClass = 'rotated-right';
+      break;
+    case 2:
+      cardContainer = $("#right-played-card");
+      rotatedClass = 'rotated-left';
+      break;
+    default:
+      throw 'Only valid for computer player';
+      break;
+  }
+
+  //create image
+  let img = $('<img>', {src:card.image, class: `card ${rotatedClass}`});
+  //remove old card
+  cardContainer.empty();
+  //add new one
+  cardContainer.append(img);
+
+  //TODO: remove card from the hand
 }
 
 let updatePlayerHandUI = function(cards) {
@@ -88,7 +120,7 @@ let updatePlayerHandUI = function(cards) {
   bottom_cards.click(function() {
     let card = $(this);
     let player_card = players[0].hand[card.attr('data-index')];
-    // console.log(players[0].hand[card.attr('data-index')]);
+    console.log(players[0].hand[card.attr('data-index')]);
 
     //TODO: Don't let player play when it's not their turn
     if(state == states.PLAYERTURN) {

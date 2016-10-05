@@ -44,6 +44,11 @@ export class Game {
       console.log("player played: " + data.card);
       this._handlePlayerPlayed(data.player, data.card);
     });
+
+    this.compPlayerUpdatedToken = EventHelper.subscribe(EventHelper.events.COMP_PLAYER_UPDATED, (msg, data) => {
+      this._nextPlayer();
+      this._playTurn();
+    });
   }
 
   _deal() {
@@ -104,7 +109,7 @@ export class Game {
   }
 
   _getReadyToPlayTrick() {
-
+    console.log('Starting new trick');
     this.playersToPlay = this.players.length;
     //person to go first is whoever won last initially the human player
     this.currPlayerIndex = this.lastWinIndex;
@@ -118,7 +123,7 @@ export class Game {
 
     console.log(`It is ${currPlayer.name}'s turn`);
 
-    if(this.playersToPlay == 0) {
+    if(this.playersToPlay < 0) {
       //the trick is over
       if(this.players[0].hand.length > 0) {
         //there are still cards to play
@@ -148,6 +153,7 @@ export class Game {
     // player.playCard(card);
 
     GameUtil.playCard(this.trick, player, card);
+    EventHelper.publish(EventHelper.events.UPDATE_HAND, {reason: "Update player hand after playing a card", cards: player.hand});
 
     this._nextPlayer();
     this._playTurn();

@@ -1,3 +1,7 @@
+#right-played-card {
+  margin-left: 20px;
+}
+
 .selected-card {
   border: solid 2px green;
 }
