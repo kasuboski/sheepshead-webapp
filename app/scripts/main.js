@@ -2,6 +2,7 @@ import {Game} from './Game.js'; //startGame subscriber isn't called unless this 
 import {EventHelper} from './EventHelper.js';
 import {states} from './StateManager.js';
 import {SheepsheadPlayer} from './SheepsheadPlayer.js';
+import {AIUtil} from './AIUtil.js';
 
 let players = [new SheepsheadPlayer(true, 'Player1'), new SheepsheadPlayer(false, 'Comp 1'), new SheepsheadPlayer(false, 'Comp 2')];
 
@@ -10,6 +11,8 @@ let state = states.DEALING;
 let selectedCards = [];
 
 let user_message = $("#user-message");
+
+let trick = [];
 
 const WAIT_TIME_BTW_PLAYERS = 2000;
 
@@ -53,6 +56,10 @@ $(function() {
 
   let new_trick_token = EventHelper.subscribe(EventHelper.events.NEW_TRICK, function(msg, data) {
     handleNewTrick();
+  });
+
+  let update_trick_token = EventHelper.subscribe(EventHelper.events.UPDATE_TRICK, function(msg, data) {
+    trick = data.trick;
   });
 
   EventHelper.publish(EventHelper.events.START_GAME, {players: players});
@@ -145,6 +152,12 @@ let updatePlayerHandUI = function(cards) {
 
 let playerTurnClickHandler = function(card, player_card) {
   //TODO: make sure card is legal
+  if(!AIUtil.isCardLegal(trick, players[0].hand, player_card)) {
+    console.log(`Card ${player_card} is illegal`);
+    return false;
+  }
+
+
   //remove card from view
   card.parent().remove();
 
@@ -157,8 +170,11 @@ let playerTurnClickHandler = function(card, player_card) {
   //clear user_message
   user_message.text("");
 
-  //send played card
-  EventHelper.publish(EventHelper.events.PLAYED_CARD, {player: players[0], card: player_card});
+  //wait a bit to send played card
+  setTimeout(() => {
+    //send played card
+    EventHelper.publish(EventHelper.events.PLAYED_CARD, {player: players[0], card: player_card});
+  }, WAIT_TIME_BTW_PLAYERS);
 }
 
 let pickingClickHandler = function(card) {

@@ -68,7 +68,7 @@ export const AIUtil = {
     let ledCard = trick[0];
 
     for(let trickCard of trick) {
-      if((trickCard.rank > highRank) && followsSuit(ledCard, trickCard)) {
+      if((trickCard.rank > highRank) && (followsSuit(ledCard, trickCard) || trickCard.isTrump())) {
         highRank = trickCard.rank;
         highCard = trickCard;
       }

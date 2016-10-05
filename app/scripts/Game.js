@@ -124,8 +124,6 @@ export class Game {
     this.playersToPlay--;
     let currPlayer = this.players[this.currPlayerIndex];
 
-    console.log(`It is ${currPlayer.name}'s turn`);
-
     if(this.playersToPlay < 0) {
       //the trick is over
       if(this.players[0].hand.length > 0) {
@@ -148,9 +146,11 @@ export class Game {
         this._getReadyToPlayTrick();
       } else {
         //the game is over
+        console.log("The game is over");
         //TODO: handle game over
       }
     } else {
+      console.log(`It is ${currPlayer.name}'s turn`);
       //some players still need to play
       if(currPlayer.isPlayer) {
         //handle human player
@@ -161,6 +161,8 @@ export class Game {
         let playedCard = GameUtil.compPlayCard(this.trick, currPlayer);
         EventHelper.publish(EventHelper.events.COMP_PLAYER_PLAYED, {player: currPlayer, card: playedCard});
       }
+
+      EventHelper.publish(EventHelper.events.UPDATE_TRICK, {trick: this.trick});
     }
   }
 
