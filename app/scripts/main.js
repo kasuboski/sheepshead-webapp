@@ -88,15 +88,18 @@ let updateCompPlayerHandUI = function(player, card) {
 
   // update comp played card
   let cardContainer;
+  let handElements;
   let rotatedClass;
   switch(playerIndex) {
     case 1:
       cardContainer = $("#left-played-card");
       rotatedClass = 'rotated-right';
+      handElements = $("#left-player-hand ul li");
       break;
     case 2:
       cardContainer = $("#right-played-card");
       rotatedClass = 'rotated-left';
+      handElements = $("#right-player-hand ul li");
       break;
     default:
       throw 'Only valid for computer player';
@@ -111,6 +114,7 @@ let updateCompPlayerHandUI = function(player, card) {
   cardContainer.append(img);
 
   //TODO: remove card from the comp player cards shown on sides
+  handElements.last().remove();
 }
 
 let updatePlayerHandUI = function(cards) {
