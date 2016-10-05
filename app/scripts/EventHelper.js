@@ -2,6 +2,7 @@ export const EventHelper = {
   events: {
     UPDATE_STATE: 'stateUpdate',
     START_GAME: 'startGame',
+    NEW_TRICK: 'newTrick',
     ASK_TO_PICK: 'askToPick',
     ASK_TO_BURY: 'askToBury',
     USER_BURY: 'userBury',

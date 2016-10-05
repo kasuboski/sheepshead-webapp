@@ -11,6 +11,8 @@ let selectedCards = [];
 
 let user_message = $("#user-message");
 
+const WAIT_TIME_BTW_PLAYERS = 2000;
+
 $(function() {
   addListenersModalButtons();
 
@@ -41,7 +43,16 @@ $(function() {
   let comp_player_played_token = EventHelper.subscribe(EventHelper.events.COMP_PLAYER_PLAYED, function(msg, data) {
     console.log(`Player ${data.player.name} played ${data.card}`);
     updateCompPlayerHandUI(data.player, data.card);
-    EventHelper.publish(EventHelper.events.COMP_PLAYER_UPDATED);
+
+    //wait a bit before moving to next player
+    setTimeout(() => {
+      EventHelper.publish(EventHelper.events.COMP_PLAYER_UPDATED);
+    }, WAIT_TIME_BTW_PLAYERS);
+    
+  });
+
+  let new_trick_token = EventHelper.subscribe(EventHelper.events.NEW_TRICK, function(msg, data) {
+    handleNewTrick();
   });
 
   EventHelper.publish(EventHelper.events.START_GAME, {players: players});
@@ -92,7 +103,7 @@ let updateCompPlayerHandUI = function(player, card) {
   //add new one
   cardContainer.append(img);
 
-  //TODO: remove card from the hand
+  //TODO: remove card from the comp player cards shown on sides
 }
 
 let updatePlayerHandUI = function(cards) {
@@ -120,7 +131,7 @@ let updatePlayerHandUI = function(cards) {
   bottom_cards.click(function() {
     let card = $(this);
     let player_card = players[0].hand[card.attr('data-index')];
-    console.log(players[0].hand[card.attr('data-index')]);
+    // console.log(players[0].hand[card.attr('data-index')]);
 
     //TODO: Don't let player play when it's not their turn
     if(state == states.PLAYERTURN) {
@@ -182,6 +193,27 @@ let pickingClickHandler = function(card) {
       EventHelper.publish(EventHelper.events.USER_BURY, {player: players[0], cards: cardsToBury});
     }
   }
+}
+
+let handleNewTrick = function() {
+  //reset played cards to back of cards
+  const leftPlayedCard = $('#left-played-card');
+  const rightPlayedCard = $('#right-played-card');
+  const playerPlayedCard = $('#player-played-card');
+
+  const backImage = "images/playingcards/PNG-cards-1.3/back.png";
+
+  const leftCard = $('<img>', {src:backImage, class:'card rotated-right'});
+  const rightCard = $('<img>', {src:backImage, class:'card rotated-left'});
+  const playerCard = $('<img>', {src:backImage, class:'card'});
+
+  leftPlayedCard.empty();
+  rightPlayedCard.empty();
+  playerPlayedCard.empty();
+
+  leftPlayedCard.append(leftCard);
+  rightPlayedCard.append(rightCard);
+  playerPlayedCard.append(playerCard);
 }
 
 let addCardtoUI = function(card, index) {

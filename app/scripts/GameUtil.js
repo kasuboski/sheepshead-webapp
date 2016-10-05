@@ -84,6 +84,9 @@ export const GameUtil = {
     }
 
     return playedCard;
+  },
+  getWinningPlayer: function(trick) {
+    return AIUtil.getWinningCard(trick).owner;
   }
 }
 

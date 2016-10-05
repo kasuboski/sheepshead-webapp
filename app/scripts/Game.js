@@ -110,6 +110,9 @@ export class Game {
 
   _getReadyToPlayTrick() {
     console.log('Starting new trick');
+    EventHelper.publish(EventHelper.events.NEW_TRICK, 'A new trick is starting');
+
+    this.trick = [];
     this.playersToPlay = this.players.length;
     //person to go first is whoever won last initially the human player
     this.currPlayerIndex = this.lastWinIndex;
@@ -127,6 +130,20 @@ export class Game {
       //the trick is over
       if(this.players[0].hand.length > 0) {
         //there are still cards to play
+        //determine winner
+        let winningPlayer = GameUtil.getWinningPlayer(this.trick);
+        
+        //add points for trick to winner
+        let pointsAdded = 0;
+        for(let trickCard of this.trick) {
+          winningPlayer.points += trickCard.points;
+          pointsAdded += trickCard.points;
+        }
+
+        console.log(`${winningPlayer.name} won the trick and got ${pointsAdded} points`);
+
+        this.lastWinIndex = this.players.indexOf(winningPlayer);
+
         //start next trick
         this._getReadyToPlayTrick();
       } else {
