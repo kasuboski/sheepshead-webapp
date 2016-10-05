@@ -14,7 +14,7 @@ let user_message = $("#user-message");
 
 let trick = [];
 
-const WAIT_TIME_BTW_PLAYERS = 2000;
+const WAIT_TIME_BTW_PLAYERS = 1500;
 
 $(function() {
   addListenersModalButtons();
@@ -60,6 +60,10 @@ $(function() {
 
   let update_trick_token = EventHelper.subscribe(EventHelper.events.UPDATE_TRICK, function(msg, data) {
     trick = data.trick;
+  });
+
+  let game_over_token = EventHelper.subscribe(EventHelper.events.GAME_OVER, function(msg, data) {
+    user_message.text(data.message);
   });
 
   EventHelper.publish(EventHelper.events.START_GAME, {players: players});

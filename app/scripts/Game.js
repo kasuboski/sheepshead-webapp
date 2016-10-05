@@ -126,28 +126,35 @@ export class Game {
 
     if(this.playersToPlay < 0) {
       //the trick is over
+      this._handleTrickOver();
       if(this.players[0].hand.length > 0) {
         //there are still cards to play
-        //determine winner
-        let winningPlayer = GameUtil.getWinningPlayer(this.trick);
-        
-        //add points for trick to winner
-        let pointsAdded = 0;
-        for(let trickCard of this.trick) {
-          winningPlayer.points += trickCard.points;
-          pointsAdded += trickCard.points;
-        }
-
-        console.log(`${winningPlayer.name} won the trick and got ${pointsAdded} points`);
-
-        this.lastWinIndex = this.players.indexOf(winningPlayer);
 
         //start next trick
         this._getReadyToPlayTrick();
       } else {
         //the game is over
         console.log("The game is over");
-        //TODO: handle game over
+
+        this.stateManager.nextState();
+        //determine winner of game
+        let picker;
+        this.players.forEach((player) => {
+          if(player.isPicker) {
+            picker = player;
+            return;  
+          }
+        });
+
+        let gameOverMessage = '';
+        if(picker.points >= 61) {
+          gameOverMessage = `The picker ${picker.name} won with ${picker.points} points`;
+        } else {
+          gameOverMessage = `The partners won with ${120 - picker.points} points`;
+        }
+
+        console.log(gameOverMessage);
+        EventHelper.publish(EventHelper.events.GAME_OVER, {message: gameOverMessage});
       }
     } else {
       console.log(`It is ${currPlayer.name}'s turn`);
@@ -164,6 +171,22 @@ export class Game {
 
       EventHelper.publish(EventHelper.events.UPDATE_TRICK, {trick: this.trick});
     }
+  }
+
+  _handleTrickOver() {
+    //determine winner
+    let winningPlayer = GameUtil.getWinningPlayer(this.trick);
+    
+    //add points for trick to winner
+    let pointsAdded = 0;
+    for(let trickCard of this.trick) {
+      winningPlayer.points += trickCard.points;
+      pointsAdded += trickCard.points;
+    }
+
+    console.log(`${winningPlayer.name} won the trick and got ${pointsAdded} points`);
+
+    this.lastWinIndex = this.players.indexOf(winningPlayer);
   }
 
   _handlePlayerPlayed(player, card) {

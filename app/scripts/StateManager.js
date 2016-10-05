@@ -32,7 +32,7 @@ export class StateManager {
         this.state = states.PLAYERTURN;
         break;
       case states.PLAYERTURN:
-        this.state = states.TRICKOVER;
+        this.state = states.GAMEOVER;
         break;
       case states.TRICKOVER:
         this.state = states.GAMEOVER;

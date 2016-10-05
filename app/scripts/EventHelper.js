@@ -12,7 +12,8 @@ export const EventHelper = {
     PLAYED_CARD: 'playedCard',
     COMP_PLAYER_PLAYED:'compPlayerPlayed',
     COMP_PLAYER_UPDATED: 'compPlayerUpdated',
-    UPDATE_TRICK: 'updateTrick'
+    UPDATE_TRICK: 'updateTrick',
+    GAME_OVER: 'gameOver'
   },
   subscribe: function(event, callback) {
     console.log(`Subscribed to event ${event}`);
