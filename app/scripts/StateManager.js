@@ -60,33 +60,11 @@ store.subscribe(() => {
 
 export class StateManager {
 
-  constructor() {
-    this.state = states.DEALING;
-  }
-
   getState() {
     return store.getState().stateString;
   }
 
   nextState() {
-    // switch(this.state) {
-    //   case states.DEALING:
-    //     this.state = states.PICKING;
-    //     break;
-    //   case states.PICKING:
-    //     this.state = states.PLAYERTURN;
-    //     break;
-    //   case states.PLAYERTURN:
-    //     this.state = states.GAMEOVER;
-    //     break;
-    //   case states.TRICKOVER:
-    //     this.state = states.GAMEOVER;
-    //     break;
-    //   case states.GAMEOVER:
-    //     this.state = DEALING;
-    //     break;
-    //   default: throw "Invalid State";
-    // }
     store.dispatch({type: 'NEXT_STATE'});
   }
 
