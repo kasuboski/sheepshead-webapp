@@ -65,7 +65,7 @@ export class Game {
   }
 
   getState() {
-    return this.stateManager.state;
+    return this.stateManager.getState();
   }
 
   startGame() {
