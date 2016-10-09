@@ -45,16 +45,18 @@ function reducer(state = {stateString: states.DEALING}, action) {
       break;
     }
 
-    //TODO: fix reducer to be pure
-    EventHelper.publish(EventHelper.events.UPDATE_STATE, {state: newState});
-    console.log(`State is now ${newState}`);
-
     return {stateString: newState};
   }
   return state;
 }
 
 let store = createStore(reducer);
+
+store.subscribe(() => {
+  const stateString = store.getState().stateString;
+  EventHelper.publish(EventHelper.events.UPDATE_STATE, {state: stateString});
+    console.log(`State is now ${stateString}`);
+});
 
 export class StateManager {
 
