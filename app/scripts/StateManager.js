@@ -25,7 +25,6 @@ function reducer(state = {stateString: states.DEALING}, action) {
   if(action.type == 'NEXT_STATE') {
     switch (stateString) {
     case states.DEALING:
-      console.log(stateString);
       newState = states.PICKING;
       break;
     case states.PICKING:
